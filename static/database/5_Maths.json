@@ -1,16 +1,5 @@
 {
-  "num_sentences": 3,
-  "images_downloaded": [
-    "monkeys_1.jpg",
-    "bunch_1.jpg",
-    "monkey_1.jpg",
-    "bananas_1.jpg",
-    "monkey_1.jpg",
-    "bananas_1.jpg"
-  ],
-  "input_texts": [
-    "Three curious monkeys stumbled upon a bunch of 12 bananas.",
-    "The wisest monkey suggested they divide the bananas equally.",
-    "Each monkey ended up with 4 bananas, enjoying their fair share of the fruity feast."
-  ]
+  "num_sentences": 0,
+  "images_downloaded": [],
+  "input_texts": []
 }
