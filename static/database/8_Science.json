@@ -1,0 +1,10 @@
+{
+  "num_sentences": 1,
+  "images_downloaded": [
+    "cat_1.jpg",
+    "dog_1.jpg"
+  ],
+  "input_texts": [
+    "A cat and dog walk down the street."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "num_sentences": 3,
+  "images_downloaded": [
+    "time_1.jpg",
+    "forest_1.jpg",
+    "way_1.jpg",
+    "rabbit_1.jpg",
+    "trees_1.jpg",
+    "adventures_1.jpg"
+  ],
+  "input_texts": [
+    "\r\nOnce upon a time in a lush forest, a curious squirrel named Sam set out to explore.",
+    "Along the way, he met a friendly rabbit named Rosie who showed him the wonders of the woods.",
+    "Together, they scampered through the trees, discovering new adventures at every turn."
+  ]
+}

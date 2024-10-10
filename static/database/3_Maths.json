@@ -1,0 +1,13 @@
+{
+  "num_sentences": 3,
+  "images_downloaded": [
+    "puppy_1.jpg",
+    "bird_1.jpg",
+    "killer_1.jpg",
+    "detective_1.jpg"
+  ],
+  "input_texts": [
+    "A puppy and bird.",
+    "A killer and detective."
+  ]
+}

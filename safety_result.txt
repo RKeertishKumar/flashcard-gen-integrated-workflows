@@ -1,0 +1,82 @@
++==============================================================================+
+
+                                   /$$$$$$            /$$
+                                  /$$__  $$          | $$
+               /$$$$$$$  /$$$$$$ | $$  \__//$$$$$$  /$$$$$$   /$$   /$$
+              /$$_____/ |____  $$| $$$$   /$$__  $$|_  $$_/  | $$  | $$
+             |  $$$$$$   /$$$$$$$| $$_/  | $$$$$$$$  | $$    | $$  | $$
+              \____  $$ /$$__  $$| $$    | $$_____/  | $$ /$$| $$  | $$
+              /$$$$$$$/|  $$$$$$$| $$    |  $$$$$$$  |  $$$$/|  $$$$$$$
+             |_______/  \_______/|__/     \_______/   \___/   \____  $$
+                                                              /$$  | $$
+                                                             |  $$$$$$/
+      by pyup.io                                              \______/
+
++==============================================================================+
+
+ REPORT 
+
+  Safety is using PyUp's free open-source vulnerability database. This
+data is 30 days old and limited. 
+  For real-time enhanced vulnerability data, fix recommendations, severity
+reporting, cybersecurity support, team and project policy management and more
+sign up at https://pyup.io or email sales@pyup.io
+
+  Safety v2.3.5 is scanning for Vulnerabilities...
+  Scanning dependencies in your environment:
+
+  -> c:\python312\lib\site-packages
+
+  Using non-commercial database
+  Found and scanned 77 packages
+  Timestamp 2023-11-09 18:29:14
+  3 vulnerabilities found
+  0 vulnerabilities ignored
+
++==============================================================================+
+ VULNERABILITIES FOUND
++==============================================================================+
+
+-> Vulnerability found in ansible version 8.6.0
+   Vulnerability ID: 42923
+   Affected spec: >0
+   ADVISORY: A flaw was found in Ansible where the secret information
+   present in async_files are getting disclosed when the user changes the...
+   CVE-2021-3532
+   For more information, please visit https://pyup.io/v/42923/f17
+
+
+-> Vulnerability found in ansible version 8.6.0
+   Vulnerability ID: 54229
+   Affected spec: >=0
+   ADVISORY: A flaw was found in Ansible Base when using the aws_ssm
+   connection plugin as there is no namespace separation for file transfers....
+   CVE-2020-25636
+   For more information, please visit https://pyup.io/v/54229/f17
+
+
+-> Vulnerability found in ansible version 8.6.0
+   Vulnerability ID: 54230
+   Affected spec: >=0
+   ADVISORY: A flaw was found in Ansible Base when using the aws_ssm
+   connection plugin as garbage collector is not happening after playbook run...
+   CVE-2020-25635
+   For more information, please visit https://pyup.io/v/54230/f17
+
+ Scan was completed. 3 vulnerabilities were found. 
+
++==============================================================================+
+   REMEDIATIONS
+
+  3 vulnerabilities were found in 1 package. For detailed remediation & fix 
+  recommendations, upgrade to a commercial license. 
+
++==============================================================================+
+
+  Safety is using PyUp's free open-source vulnerability database. This
+data is 30 days old and limited. 
+  For real-time enhanced vulnerability data, fix recommendations, severity
+reporting, cybersecurity support, team and project policy management and more
+sign up at https://pyup.io or email sales@pyup.io
+
++==============================================================================+
