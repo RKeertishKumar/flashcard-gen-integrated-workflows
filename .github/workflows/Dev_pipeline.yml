@@ -1,0 +1,234 @@
+name: CI pipeline
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions: write-all
+
+jobs:
+  selenium-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout in main-test branch
+        uses: actions/checkout@v4
+        with:
+          ref: "main"
+          token: ${{ secrets.CLA_WRITE_ACCESS}}
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: List the apps installed
+        run: |
+          apt list --installed
+
+      - name: Run the app
+        run: |
+          chmod +x "./Web_drivers/chromedriver-linux64/chromedriver"
+          
+           python app.py &
+           
+
+
+      - name: Test with pytest
+        run: |
+          python -m pytest tests/test_selenium.py --html=selenium-test-report.html
+          python -m pytest tests/test_selenium.py --junitxml=selenium-test-report.xml
+
+
+      - name: Upload Selenium Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Selenium-testing-results-pytest-selenium
+          path: |
+             selenium-test-report.html
+             selenium-test-report.xml
+             Selenium_tests_screenshots
+
+  build-and-test-with-code-coverage:
+    runs-on: ubuntu-latest
+    needs:
+      - selenium-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Test with pytest
+        run: |
+          python -m pytest tests/test_unit.py  --html=unit-test-report.html
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Unit-testing-results-pytest
+          path: unit-test-report.html
+
+      - name: Run code coverage
+        run: |
+          python -m coverage run -m pytest tests/test_unit.py
+
+      - name: Display code coverage and form html report file
+        run: |
+          python -m coverage report
+          python -m coverage html
+
+
+      - name: Upload Code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Code-coverage-results-coverage-scan
+          path: htmlcov
+
+      - name: Check if code coverage is equal to or above 75%
+        run: python -m coverage report --fail-under=75
+        continue-on-error: true
+
+  push-main-to-security-branch:
+    needs:
+      - build-and-test-with-code-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "main"
+
+      - name: Create and push to preprod branch
+        if: success()
+        run: |
+          git push  --force origin main:security
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLA_WRITE_ACCESS }}
+  
+  Open-source-dependency-vulnerbilities-check-with-safety:
+    needs: push-main-to-security-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "security"
+          
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install Safety
+        run: pip install safety
+
+      - name: Run Safety
+        run: |
+           python -m safety check
+           python -m safety check --output text > safety_result.txt
+            
+        continue-on-error: true
+
+      - name: Upload Safety Open Source Dependency Vulnerabilities Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Open-source-dependency-vulnerbilities-check-results-safety-scan
+          path: safety_result.txt
+
+  SAST-testing-with-bandit:
+    needs: push-main-to-security-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "security"
+          
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit
+        run: bandit -r . -f html -o bandit_report.html
+        continue-on-error: true
+
+      - name: Upload Bandit SAST Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: SAST-results-bandit-scan
+          path: bandit_report.html
+
+
+  DAST-testing-with-OWASP-ZAP:
+    needs: push-main-to-security-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: "security"
+         
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      - name: Install dependencies
+        run: |
+          sudo pip install -r requirements.txt
+          sudo python app.py &
+
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.7.0
+        with:
+         target: 'http://127.0.0.1:5000'
+         artifact_name: 'DAST-results-zap_scan'
+         
+      - name : Exit ZAP
+        run: exit 0
+         
+        env:
+          GITHUB_TOKEN: ${{ secrets.CLA_WRITE_ACCESS }}
+          
+  push-security-branch-to-test-repo:
+    needs:
+      - DAST-testing-with-OWASP-ZAP
+      - SAST-testing-with-bandit
+      - Open-source-dependency-vulnerbilities-check-with-safety
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: 'Code-Crusaders-DSU/Test-Flashcard-Generator-WebApp'
+        ref: main-test
+        token: ${{ secrets.CLA_WRITE_ACCESS }}
+
+    - name: Add dev repo and pull to test repo
+      run: |
+        
+        git remote add dev https://github.com/Code-Crusaders-DSU/Dev-Flashcard-Generator-WebApp
+        git remote -v
+        git branch -a
+        git config user.name RKeertishKumar
+        git config user.email 141417594+RKeertishKumar@users.noreply.github.com
+        
+        git pull dev main
+        git push 
+      
+
