@@ -1,0 +1,15 @@
+test 1
+test 2
+test 3
+test 4
+test 5 Remove circle ci from projects and wanted to verify
+test 6 used github GUI to push a new branch and changed the branch to default to overcome merge conflicts
+test 7 no git pull and only git push
+test 8 switched main branch in prod repo that was pushed from dev repo with old after-IAST branch. Then deleted after-IAST and renamed main to after-IAST
+test 9
+test 10
+test 11
+test 12 Check if with rebase, whether the content is being transferred.
+test 13
+test 14 With pull request mechanism
+test 15 Knowledge gained after understanding git branching at it's core

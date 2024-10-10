@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flashcard Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5; /* Light grey background */
+            color: #333; /* Dark grey text color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+            padding: 0;
+        }
+
+        .medium-text {
+            font-size: 24px;
+            color: #333; /* Dark grey text color */
+        }
+
+        .large-text {
+            font-size: 48px;
+            color: #e44d26; /* A shade of orange for a pop of color */
+        }
+
+        .flashcard-container {
+            border: 2px solid #fff; /* White border */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            background-color: #fff; /* White background */
+            margin-bottom: 20px;
+            width: 1200px; /* Set the width of the container */
+            height: 700px; /* Set the height of the container */
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+            padding: 10px; /* Add padding to increase the size of the box containing the images */
+        }
+        
+        .image-container img {
+            margin: 10px;
+            width: 400px;
+            height: 300px; /* Increase the width of the images */
+            border-radius: 5px;
+        }
+
+        .input-text {
+            font-size: 40px; /* Increase font size for better readability */
+            margin: 15px 0;
+            font-family: 'Comic Sans MS', cursive; /* Use Comic Sans MS or any other comic-style font */
+            color: #333; /* Dark grey text color */
+        }
+        
+
+        .pointers {
+            color: #e44d26; /* A shade of orange for emphasis */
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .error-message {
+            background-color: #fee5e5; /* Light red background */
+            color: #e44d26; /* A shade of orange for contrast */
+            border: 1px solid #e44d26; /* Border color matching the large-text color */
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Adjusted styles for better readability */
+        label, select, textarea, input[type="submit"] {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            padding: 12px;
+            background-color: #333;
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Adjusted layout for the checkbox */
+        .use-illustration-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .use-illustration-label {
+            display: inline-flex;
+            align-items: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .input-text.medium-text {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        #language {
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px; /* Adjust the max-width to your desired value */
+            text-align: left;
+        }
+        
+        #grade,
+        #subject,
+        label[for="grade"],
+        label[for="subject"] {
+            display: none;
+        }
+
+    
+
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1 class="medium-text" style="text-align: center;">Flashcard Generator</h1>
+    <form method="POST">
+
+        <label for="grade" class="medium-text">Select Grade:</label>
+        <select name="grade" id="grade" class="medium-text">
+            {% for grade in range(1, 11) %}
+                <option value="{{ grade }}" {% if selected_grade == grade|string %} selected {% endif %}>{{ grade }}</option>
+            {% endfor %}
+        </select>
+        
+        <!-- Modify the subject selection based on the selected grade -->
+        <label for="subject" class="medium-text">Select Subject:</label>
+        <select name="subject" id="subject" class="medium-text" >
+            {% for subject in subjects[selected_grade] %}
+                <option value="{{ subject }}" {% if selected_subject == subject %} selected {% endif %}>{{ subject }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="pointers">
+            <p>1. WAIT 1 min after first startup.
+            <p>2. Always use a full stop after a sentence.</p>
+        </div>
+
+        <label for="input_text" class="medium-text">Enter a paragraph:</label>
+        <textarea name="input_text" id="input_text" class="medium-text" style="height: 100px; font-size: 16px;"></textarea>
+
+        <label for="language" class="medium-text">Select Language:</label>
+        <select name="language" id="language" class="medium-text">
+            <option value="English" selected>English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Kannada">Kannada</option>
+            <option value="Telugu">Telugu</option>
+            <option value="Tamil">Tamil</option>
+        </select>
+
+        <!-- Add a checkbox input element -->
+        <div class="use-illustration-label">
+            <label for="use_pixabay" class="medium-text">Use illustrations:</label>
+            <input type="checkbox" name="use_pixabay" id="use_pixabay" class="use-illustration-checkbox">
+        </div>
+        <input type="submit" value="Generate Flashcards" onclick="startCountdown()" class="medium-text">
+    </form>
+</div>
+
+    {% if error_message %}
+        <div class="error-message">
+            <p>{{ error_message }}</p>
+        </div>
+    {% endif %}
+    <div class="timer large-text" id="timer"></div>
+
+    <!-- Use a for loop to create a center container for each sentence -->
+    {% for i in range(num_sentences) %}
+    <div class="flashcard-container" style="background-color: {% if i % 3 == 0 %}#e6f7ff;{% elif i % 3 == 1 %}#ffe6e6;{% else %}#e6ffe6;{% endif %}">
+        <div class="image-container">
+            {% if i % 3 == 2 %}
+            <div class="input-text medium-text">{{ input_texts[i] }}</div>
+            {% endif %}
+        
+            <div style="width: {{ '400px' if i % 3 == 1 else 'auto' }}; margin-right: {{ '100px' if i % 3 == 1 or i % 3 == 2 else '0' }};">
+
+                {% if images_downloaded %}
+                <img src="{{ url_for('static', filename='images/' + images_downloaded[i*2]) }}" alt="{{ images_downloaded[i*2] }}">
+                {% endif %}
+            
+                {% if images_downloaded %}
+                <img src="{{ url_for('static', filename='images/' + images_downloaded[i*2 + 1]) }}" alt="{{ images_downloaded[i*2 + 1] }}">
+                {% endif %}
+            </div>
+        
+            {% if i % 3 == 1 %}
+            <div class="input-text medium-text" style="width: 400px; margin-left: 50px; style="text-align: left;">{{ input_texts[i] }}</div>
+            {% endif %}
+        </div>
+        
+        <!-- Display the input text for the current sentence -->
+        {% if i % 3 == 0 %}
+            <div class="input-text medium-text" style="text-align: center;">{{ input_texts[i] }}</div>
+            {% endif %}
+    </div>
+{% endfor %}
+    
+    
+    <h2 class="sentence medium-text" id="entered_sentence"></h2>
+    <h3 id="input_text_display" class="medium-text"></h3>
+    <script>
+        var countdown = 100;
+
+        function startCountdown() {
+            var timerElement = document.getElementById("timer");
+            var enteredSentenceElement = document.getElementById("entered_sentence");
+            var inputTextElement = document.getElementById("input_text");
+            var inputTextDisplayElement = document.getElementById("input_text_display");
+
+            var interval = setInterval(function() {
+                countdown--;
+                timerElement.innerText = countdown;
+                timerElement.classList.add("large-text"); // Apply the large-text class to the timer
+                if (countdown === 0) {
+                    clearInterval(interval);
+                    timerElement.innerText = "";
+
+                    enteredSentenceElement.innerText = inputTextElement.value;
+                    inputTextDisplayElement.innerText = inputTextElement.value;
+                }
+            }, 1000);
+        }
+
+        document.getElementById('grade').addEventListener('change', function() {
+            var selectedGrade = this.value; // Get the selected grade value
+        
+            var subjects = {
+                '1': ['Hindi', 'English', 'Maths', 'Urdu'],
+                '2': ['Hindi', 'English', 'Maths', 'Urdu'],
+                '3': ['Hindi', 'English', 'Maths', 'Urdu', 'Environmental Studies'],
+                '4': ['Hindi', 'English', 'Maths', 'Urdu', 'Environmental Studies'],
+                '5': ['Hindi', 'English', 'Maths', 'Urdu', 'Environmental Studies'],
+                '6': ['Hindi', 'English', 'Maths', 'Urdu', 'Science', 'Social Science', 'Sanskrit'],
+                '7': ['Hindi', 'English', 'Maths', 'Urdu', 'Science', 'Social Science', 'Sanskrit'],
+                '8': ['Hindi', 'English', 'Maths', 'Urdu', 'Science', 'Social Science', 'Sanskrit'],
+                '9': ['Hindi', 'English', 'Maths', 'Urdu', 'Science', 'Social Science', 'Sanskrit', 'Health and Physical Education', 'ICT'],
+                '10': ['Hindi', 'English', 'Maths', 'Urdu', 'Science', 'Social Science', 'Sanskrit', 'Health and Physical Education', 'ICT'],
+              };
+          
+        
+            var subjectDropdown = document.getElementById('subject');
+            subjectDropdown.innerHTML = ''; // Clear the existing options
+        
+            // Populate the subjects dropdown with options based on the selected grade
+            subjects[selectedGrade].forEach(function(subject) {
+                var option = document.createElement('option');
+                option.value = subject;
+                option.text = subject;
+                subjectDropdown.appendChild(option);
+            });
+        });
+    </script>
+</body>
+</html>
