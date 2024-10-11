@@ -31,6 +31,14 @@ jobs:
       - name: List the apps installed
         run: |
           apt list --installed
+      
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          DRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/linux64/chromedriver-linux64.zip"
+          wget $DRIVER_URL
+          unzip chromedriver-linux64.zip -d /usr/local/bin/
+          chmod +x /usr/local/bin/chromedriver-linux64/chromedriver
 
       - name: Run the app
         run: |
@@ -208,29 +216,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CLA_WRITE_ACCESS }}
           
-  push-security-branch-to-test-repo:
-    needs:
-      - DAST-testing-with-OWASP-ZAP
-      - SAST-testing-with-bandit
-      - Open-source-dependency-vulnerbilities-check-with-safety
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        repository: 'Code-Crusaders-DSU/Test-Flashcard-Generator-WebApp'
-        ref: main-test
-        token: ${{ secrets.CLA_WRITE_ACCESS }}
-
-    - name: Add dev repo and pull to test repo
-      run: |
-        
-        git remote add dev https://github.com/Code-Crusaders-DSU/Dev-Flashcard-Generator-WebApp
-        git remote -v
-        git branch -a
-        git config user.name RKeertishKumar
-        git config user.email 141417594+RKeertishKumar@users.noreply.github.com
-        
-        git pull dev main
-        git push 
       
 
