@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
-chrome_driver_path = "./Web_drivers/chromedriver-linux64/chromedriver"
+chrome_driver_path = "/usr/local/bin/chromedriver"
 screenshots_path = "./Selenium_tests_screenshots/"
 
 chrome_service = Service(chrome_driver_path)
