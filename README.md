@@ -1,7 +1,13 @@
 # Flashcard-Generator-WebApp
 A Flask-based web application that uses spaCy, Unsplash API for photos, and Pixabay API for illustrated images to generate visual flashcards from sentences. Enter a sentence, extract nouns, find related photos from either Unsplash or Pixabay, and create interactive flashcards for effective learning.
 
+## To setup environment and use the application, you need to get Unsplash and Pixabay API keys
 
+Create a .env with two environment variables.
+```.env
+UNSPLASH_API_KEY="Get your own API keys from https://unsplash.com/developers"
+PIXABAY_API_KEY="Get your own API keys from https://pixabay.com/service/about/api/"
+```
 
 ## GitHub Workflow Overview
 
