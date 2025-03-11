@@ -55,7 +55,7 @@ jobs:
 
 
       - name: Upload Selenium Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Selenium-testing-results-pytest-selenium
           path: |
@@ -85,7 +85,7 @@ jobs:
           python -m pytest tests/test_unit.py  --html=unit-test-report.html
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Unit-testing-results-pytest
           path: unit-test-report.html
@@ -101,7 +101,7 @@ jobs:
 
 
       - name: Upload Code coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Code-coverage-results-coverage-scan
           path: htmlcov
@@ -152,7 +152,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Safety Open Source Dependency Vulnerabilities Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Open-source-dependency-vulnerbilities-check-results-safety-scan
           path: safety_result.txt
@@ -179,7 +179,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Bandit SAST Test Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SAST-results-bandit-scan
           path: bandit_report.html
